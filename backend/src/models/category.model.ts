@@ -1,6 +1,7 @@
 import { Field, GraphQLISODateTime, ID, ObjectType } from "type-graphql"
 import { TransactionModel } from "./transaction.model"
 import { UserModel } from "./user.model"
+import { CategoryColor } from "../generated/prisma/enums"
 
 @ObjectType()
 export class CategoryModel {
@@ -8,16 +9,16 @@ export class CategoryModel {
   id!: string
 
   @Field(() => String)
-  type!: string
+  title!: string
 
-  @Field(() => String, { nullable: true })
-  description?: string
+  @Field(() => String)
+  description!: string
 
-  @Field(() => GraphQLISODateTime)
-  date!: Date
+  @Field(() => String)
+  icon!: string
 
-  @Field(() => Number)
-  amount!: number
+  @Field(() => CategoryColor)
+  color!: CategoryColor
 
   @Field(() => GraphQLISODateTime)
   createdAt!: Date
@@ -27,9 +28,6 @@ export class CategoryModel {
 
   @Field(() => String)
   userId!: string
-
-  @Field(() => String)
-  categoryId!: string
 
   @Field(() => UserModel, { nullable: true })
   user?: UserModel

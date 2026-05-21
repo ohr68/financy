@@ -2,8 +2,16 @@ import { prismaClient } from "../../prisma/prisma"
 import type { CreateTransactionInput, UpdateTransactionInput } from "../dtos/input/transaction.input"
 
 export class TransactionService {
- async listTransactions() {
+  async listTransactions() {
     return await prismaClient.transaction.findMany()
+  }
+
+  async findByCategoryId(categoryId: string) {
+    return await prismaClient.transaction.findMany({
+      where: {
+        categoryId
+      }
+    })
   }
 
   async createTransaction(
@@ -23,9 +31,9 @@ export class TransactionService {
   }
 
   async updateTransaction(
-      id: string, 
-      categoryId: string,
-      data: UpdateTransactionInput) {
+    id: string,
+    categoryId: string,
+    data: UpdateTransactionInput) {
     const transaction = await prismaClient.transaction.findUnique({
       where: {
         id
