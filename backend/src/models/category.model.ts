@@ -2,6 +2,7 @@ import { Field, GraphQLISODateTime, ID, ObjectType } from "type-graphql"
 import { TransactionModel } from "./transaction.model"
 import { UserModel } from "./user.model"
 import { CategoryColor } from "../generated/prisma/enums"
+import { MostUsedCategoryOutput } from "../dtos/output/category.output"
 
 @ObjectType()
 export class CategoryModel {
@@ -28,6 +29,15 @@ export class CategoryModel {
 
   @Field(() => String)
   userId!: string
+
+  @Field(() => Number, { nullable: true })
+  countCategories?: number
+
+  @Field(() => MostUsedCategoryOutput, { nullable: true })
+  mostUsedCategory?: MostUsedCategoryOutput
+
+  @Field(() => Number, { nullable: true })
+  countTransactions?: number
 
   @Field(() => UserModel, { nullable: true })
   user?: UserModel

@@ -31,6 +31,15 @@ export class TransactionModel {
   @Field(() => String)
   categoryId!: string
 
+  @Field(() => Number)
+  totalBalance?: number
+
+  @Field(() => Number)
+  monthlyIncomes?: number
+
+  @Field(() => Number)
+  monthlyExpenses?: number
+
   @Field(() => UserModel, { nullable: true })
   user?: UserModel
 

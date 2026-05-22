@@ -9,6 +9,7 @@ import { UserService } from "../services/user.service"
 import { CategoryModel } from "../models/category.model"
 import { CategoryService } from "../services/category.service"
 import { CreateCategoryInput, UpdateCategoryInput } from "../dtos/input/category.input"
+import { MostUsedCategoryOutput } from "../dtos/output/category.output"
 
 @Resolver(() => TransactionModel)
 @UseMiddleware(IsAuth)
@@ -50,12 +51,29 @@ export class CategoryResolver {
   }
 
   @FieldResolver(() => UserModel)
-  async user(@Root() transaction: TransactionModel): Promise<UserModel> {
-    return this.userService.findUser(transaction.userId)
+  async user(@Root() category: CategoryModel): Promise<UserModel> {
+    return this.userService.findUser(category.userId)
   }
 
   @FieldResolver(() => [TransactionModel])
   async transactions(@Root() category: CategoryModel): Promise<TransactionModel[]> {
     return this.transactionService.findByCategoryId(category.id)
+  }
+
+  @FieldResolver(() => Number)
+  async countCategories(@Root() category: CategoryModel): Promise<number> {
+    return this.categoryService.countCategories(category.userId)
+  }
+
+  @FieldResolver(() => MostUsedCategoryOutput, {
+    nullable: true
+  })
+  async mostUsedCategory(@Root() category: CategoryModel): Promise<MostUsedCategoryOutput | null> {
+    return this.transactionService.mostUsedCategory(category.userId)
+  }
+
+  @FieldResolver(() => Number)
+  async countTransactions(@Root() category: CategoryModel): Promise<number> {
+    return this.transactionService.countTransactions(category.userId)
   }
 }

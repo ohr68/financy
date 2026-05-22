@@ -4,7 +4,7 @@ import { IsAuth } from "../middlewares/auth.middleware"
 import { TransactionService } from "../services/transaction.service"
 import { GqlUser } from "../graphql/decorators/user.decorator"
 import { CreateTransactionInput, UpdateTransactionInput } from "../dtos/input/transaction.input"
-import type { User } from "../generated/prisma/browser"
+import { TransactionType, type User } from "../generated/prisma/browser"
 import { UserModel } from "../models/user.model"
 import { UserService } from "../services/user.service"
 import { CategoryModel } from "../models/category.model"
@@ -58,5 +58,19 @@ export class TransactionResolver {
   @FieldResolver(() => CategoryModel)
   async category(@Root() transaction: TransactionModel): Promise<CategoryModel> {
     return this.categoryService.findCategory(transaction.categoryId)
+  }
+
+  @FieldResolver(() => Number)
+  async monthlyIncomes(@Root() transaction: TransactionModel): Promise<number> {
+    return this.transactionService.getMontlhyAmountByType(
+      transaction.userId, 
+      TransactionType.Revenue)
+  }
+  
+  @FieldResolver(() => Number)
+  async monthlyExpenses(@Root() transaction: TransactionModel): Promise<number> {
+    return this.transactionService.getMontlhyAmountByType(
+      transaction.userId,
+    TransactionType.Expense)
   }
 }

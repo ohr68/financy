@@ -67,4 +67,12 @@ export class CategoryService {
       where: { id }
     })
   }
+
+  async countCategories(userId: string) {
+    return await prismaClient.category.count({
+      where: {
+        userId
+      }
+    })
+  }
 }

@@ -11,12 +11,12 @@ export class UserModel {
   @Field(() => String)
   email!: string
 
-  @Field(() => String, { nullable: true })
-  password: string
+  @Field(() => String)
+  password!: string
 
   @Field(() => GraphQLISODateTime)
   createdAt!: Date
 
-  @Field(() => GraphQLISODateTime)
-  updatedAt: Date
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  updatedAt?: Date
 }
