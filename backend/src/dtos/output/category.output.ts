@@ -2,9 +2,9 @@ import { Field, ObjectType } from "type-graphql"
 
 @ObjectType()
 export class MostUsedCategoryOutput {
-  @Field()
+  @Field(() => String)
   title!: string
 
-  @Field()
+  @Field(() => String)
   icon!: string
 }

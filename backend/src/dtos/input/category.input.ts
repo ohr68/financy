@@ -1,5 +1,5 @@
 import { Field, InputType } from "type-graphql";
-import { CategoryColor } from "../../generated/prisma/client";
+import { CategoryColor } from "../../graphql/enums/category-color-enum";
 
 @InputType()
 export class CreateCategoryInput {
@@ -23,7 +23,7 @@ export class UpdateCategoryInput {
 
   @Field(() => String, { nullable: true })
   description?: string
-  
+
   @Field(() => String)
   icon?: string
 

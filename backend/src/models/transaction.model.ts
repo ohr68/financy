@@ -1,14 +1,15 @@
 import { Field, GraphQLISODateTime, ID, ObjectType } from "type-graphql"
 import { UserModel } from "./user.model"
 import { CategoryModel } from "./category.model"
+import { TransactionType } from "../graphql/enums/transaction-type.enum"
 
 @ObjectType()
 export class TransactionModel {
   @Field(() => ID)
   id!: string
 
-  @Field(() => String)
-  type!: string
+  @Field(() => TransactionType)
+  type!: TransactionType
 
   @Field(() => String, { nullable: true })
   description?: string
