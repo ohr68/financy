@@ -1,5 +1,5 @@
 import { Mail, UserPen, UserPlus } from 'lucide-react'
-import { AuthLayout } from '../components/_layout/auth-layout'
+import { AuthLayout } from '../_layouts/auth-layout'
 import { AuthCard } from '../components/auth/auth-card'
 import { TextField } from '../components/text-field'
 import { PasswordField } from '../components/auth/password-field'

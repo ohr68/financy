@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { LogoHeader } from '../logo-header'
+import { LogoHeader } from '../components/logo-header'
 
 type Props = {
   children: ReactNode
