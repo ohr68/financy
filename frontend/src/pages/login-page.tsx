@@ -1,55 +1,65 @@
-import { LogoHeader } from "../components/logo-header"
+import { Mail, UserPen, UserPlus } from 'lucide-react'
+import { AuthLayout } from '../components/_layout/auth-layout'
+import { AuthCard } from '../components/auth/auth-card'
+import { TextField } from '../components/text-field'
+import { PasswordField } from '../components/auth/password-field'
+import { CheckboxField } from '../components/checkbox-field'
+import { Divider } from '../components/divider'
+import { AuthFooter } from '../components/auth/auth-footer'
+
 
 export function LoginPage() {
   return (
-    <div className='flex min-h-0 px-6'>
-      <div className='flex flex-col items-center gap-5'>
-        <div className='flex w-full justify-center'>
-          <LogoHeader />
-        </div>
-        <div className="flex flex-col w-full items-center justify-center p-6">
-          <h2 className="font-bold text-lg text-gray-800">Fazer login</h2>
-          <span className="text-gray-600">Entre na sua conta para continuar</span>
+    <AuthLayout>
+      <AuthCard>
+        <div className="flex flex-col items-center">
+          <h2 className="text-3xl font-bold text-gray-800">
+            Fazer login
+          </h2>
 
-          <div className="flex-1 flex-col w-full">
-            <div className="flex flex-col">
-              <label className="mt-4 text-gray-700 text-sm">
-                E-mail
-              </label>
-              <input
-                type="email"
-                className="border border-gray-300 
-                rounded px-3 py-2 mt-1 focus:outline-none"
-                placeholder="mail@exemplo.com" />
-            </div>
-            <div className="flex flex-col">
-              <label className="mt-4 text-gray-700 text-sm">
-                Senha
-              </label>
-              <input
-                type="password"
-                className="border border-gray-300 
-                rounded px-3 py-2 mt-1 focus:outline-none"
-                placeholder="Digite sua senha" />
-            </div>
-            <div className="flex w-full items-center justify-between mt-4">
-              <div className="px-2">
-                <input type="checkbox" />
-                Lembrar-me
-              </div>
-              <span>Recuperar senha</span>
-            </div>
-            <button className="bg-brand-base 
-                text-neutral-white  
-                hover:bg-brand-dark">
-              Entrar
+          <span className="mt-2 text-sm text-gray-500">
+            Entre na sua conta para continuar
+          </span>
+        </div>
+
+        <div className="mt-8 flex flex-col gap-5">
+          <TextField
+            label="E-mail"
+            type="email"
+            placeholder="mail@exemplo.com"
+            icon={<Mail size={18} />}
+          />
+
+          <PasswordField
+            label="Senha"
+            placeholder="Digite sua senha"
+          />
+
+          <div className="flex items-center justify-between text-sm">
+            <CheckboxField label="Lembrar-me" />
+
+            <button className="text-brand hover:underline">
+              Recuperar senha
             </button>
           </div>
-          <div className="divide-x-4 divide-indigo-500">
-            ou
-          </div>
+
+          <button className="
+            mt-2 h-12 rounded-lg bg-brand
+            text-sm font-semibold text-white
+            hover:bg-brand-dark transition
+          ">
+            Entrar
+          </button>
+
+          <Divider />
+
+          <AuthFooter
+            question='Ainda não tem uma conta?'
+            buttonLabel='Criar conta'
+            buttonIcon={<UserPlus size={18} />}
+          />
         </div>
-      </div>
-    </div>
-  );
+      </AuthCard>
+    </AuthLayout>
+  )
 }

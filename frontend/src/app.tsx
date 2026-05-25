@@ -3,12 +3,8 @@ import { router } from "./routes";
 
 export function App() {
   return (
-    <div className='h-dvh w-full flex justify-center
-        items-center p-10'
-    >
-      <div className='flex w-full justify-center'>
+    <div className="min-h-dvh bg-gray-100 p-10">
         <RouterProvider router={router} />
-      </div>
     </div>
   )
 }
