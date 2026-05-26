@@ -1,6 +1,6 @@
-import { Tag, ArrowDownUp, Star } from 'lucide-react'
-import type { Category } from '../types/category'
+import { Tag, ArrowDownUp } from 'lucide-react'
 import { CategoryIcon } from './category-icon'
+import type { Category } from '../../@types/categories/category'
 
 interface CategorySummaryCardsProps {
   categories: Category[]
@@ -23,7 +23,7 @@ export function CategorySummaryCards({ categories }: CategorySummaryCardsProps) 
         </div>
         <div>
           <p className="text-3xl font-bold text-gray-800">{totalCategories}</p>
-          <p className="text-xs uppercase tracking-wide text-gray-400 font-medium">Total de categorias</p>
+          <p className="text-xs uppercase tracking-wider text-gray-400 font-medium">Total de categorias</p>
         </div>
       </div>
 
@@ -33,7 +33,7 @@ export function CategorySummaryCards({ categories }: CategorySummaryCardsProps) 
         </div>
         <div>
           <p className="text-3xl font-bold text-gray-800">{totalTransactions}</p>
-          <p className="text-xs uppercase tracking-wide text-gray-400 font-medium">Total de transações</p>
+          <p className="text-xs uppercase tracking-wider text-gray-400 font-medium">Total de transações</p>
         </div>
       </div>
 
@@ -43,7 +43,7 @@ export function CategorySummaryCards({ categories }: CategorySummaryCardsProps) 
         )}
         <div>
           <p className="text-3xl font-bold text-gray-800">{mostUsed?.title ?? '—'}</p>
-          <p className="text-xs uppercase tracking-wide text-gray-400 font-medium">Categoria mais utilizada</p>
+          <p className="text-xs uppercase tracking-wider text-gray-400 font-medium">Categoria mais utilizada</p>
         </div>
       </div>
     </div>

@@ -1,22 +1,24 @@
-import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client'
-import { setContext } from '@apollo/client/link/context'
+import { ApolloLink, HttpLink } from '@apollo/client'
+import { ApolloClient, InMemoryCache } from '@apollo/client'
+import { SetContextLink } from '@apollo/client/link/context'
+import { useAuthStore } from '../stores/auth'
 
-const httpLink = createHttpLink({
-  uri: import.meta.env.VITE_GRAPHQL_URL ?? 'http://localhost:3000/graphql',
+const httpLink = new HttpLink({
+  uri: import.meta.env.VITE_GRAPHQL_URL ?? 'http://localhost:4000/graphql',
 })
 
-const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem('token')
+const authLink = new SetContextLink((prevContext) => {
+  const token = useAuthStore.getState().token
 
   return {
     headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : '',
+      ...prevContext.headers,
+      Authorization: token ? `Bearer ${token}` : '',
     },
   }
 })
 
 export const apolloClient = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: ApolloLink.from([httpLink, authLink]),
   cache: new InMemoryCache(),
 })

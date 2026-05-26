@@ -1,9 +1,9 @@
 import { NavLink } from 'react-router-dom'
-import { useAuthContext } from '../contexts/auth-context'
 import logo from '../assets/Logo.png'
+import { useAuthStore } from '../stores/auth'
 
 export function Navbar() {
-  const { user } = useAuthContext()
+  const user = useAuthStore((state) => state.user)
 
   const initials = user?.name
     .split(' ')

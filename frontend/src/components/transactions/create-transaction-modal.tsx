@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { X } from 'lucide-react'
-import { useTransactions } from '../hooks/useTransactions'
-import { useCategories } from '../hooks/useCategories'
+import { ArrowDownCircle, ArrowUpCircle, X } from 'lucide-react'
+import { useTransactions } from '../../hooks/use-transactions'
+import { useCategories } from '../../hooks/use-categories'
 import { TextField } from '../text-field'
-import type { TransactionType } from '../types/transaction'
+import type { TransactionType } from '../../@types/transactions/transaction-type'
 
 interface CreateTransactionModalProps {
   open: boolean
@@ -67,21 +67,27 @@ export function CreateTransactionModal({ open, onClose }: CreateTransactionModal
             onClick={() => setType('Expense')}
             className={`flex-1 flex items-center justify-center gap-2 rounded-lg border py-2 text-sm font-medium transition cursor-pointer ${
               type === 'Expense'
-                ? 'border-danger text-danger bg-red-light'
+                ? 'border-red'
                 : 'border-gray-200 text-gray-500 hover:bg-gray-50'
             }`}
           >
-            <span className="text-danger">⊖</span> Despesa
+            <ArrowDownCircle size={16} className={
+              type === 'Expense' 
+              ? `text-red`
+              : `text-gray-400`}/> Despesa
           </button>
           <button
             onClick={() => setType('Revenue')}
             className={`flex-1 flex items-center justify-center gap-2 rounded-lg border py-2 text-sm font-medium transition cursor-pointer ${
               type === 'Revenue'
-                ? 'border-success text-success bg-green-light'
+                ? 'border-green'
                 : 'border-gray-200 text-gray-500 hover:bg-gray-50'
             }`}
           >
-            <span className="text-success">⊕</span> Receita
+            <ArrowUpCircle size={16} className={
+              type === 'Revenue' 
+              ? `text-success`
+              : `text-gray-400`}/> Receita
           </button>
         </div>
 

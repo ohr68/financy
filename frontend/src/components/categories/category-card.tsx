@@ -1,7 +1,7 @@
 import { Trash2, Pencil } from 'lucide-react'
-import type { Category } from '../types/category'
-import { CategoryBadge } from './CategoryBadge'
+import { CategoryBadge } from './category-badge'
 import { CategoryIcon } from './category-icon'
+import type { Category } from '../../@types/categories/category'
 
 interface CategoryCardProps {
   category: Category

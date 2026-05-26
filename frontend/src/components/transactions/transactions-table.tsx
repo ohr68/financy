@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import type { Transaction } from '../types/transaction'
-import { TransactionRow } from './TransactionRow'
+import { TransactionRow } from './transaction-row'
+import type { Transaction } from '../../@types/transactions/transaction'
 
 const PAGE_SIZE = 10
 

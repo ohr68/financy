@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { useDashboard } from '../hooks/useDashboard'
+import { useDashboard } from '../hooks/use-dashboard'
 import { SummaryCards } from '../components/dashboard/summary-cards'
 import { RecentTransactionsList } from '../components/dashboard/recent-transactions-list'
-import { CategoriesSidebar } from '../components/CategoriesSidebar'
-import { CreateTransactionModal } from '../components/CreateTransactionModal'
+import { CategoriesSidebar } from '../components/categories/categories-sidebar'
+import { CreateTransactionModal } from '../components/transactions/create-transaction-modal'
 
 export function DashboardPage() {
   const { summary, recentTransactions, categoryBreakdown, loading } = useDashboard()

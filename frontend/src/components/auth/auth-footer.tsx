@@ -1,16 +1,17 @@
-import { UserPlus } from 'lucide-react'
 import type { InputHTMLAttributes, ReactNode } from 'react'
 
-type AuthFooterProps = InputHTMLAttributes<HTMLInputElement> & {
+type AuthFooterProps = InputHTMLAttributes<HTMLButtonElement> & {
   question: string
   buttonLabel: string
-  buttonIcon?: ReactNode
+  buttonIcon?: ReactNode,
+  onClick?: () => void
 }
 
 export function AuthFooter({
   question,
   buttonLabel,
-  buttonIcon
+  buttonIcon,
+  onClick
 } : AuthFooterProps) {
   return (
     <div className="flex flex-col items-center gap-4">
@@ -18,7 +19,9 @@ export function AuthFooter({
         {question}
       </span>
 
-      <button className="
+      <button 
+        onClick={onClick}
+        className="
         flex h-12 w-full items-center justify-center gap-2
         rounded-lg border border-gray-300 bg-white
         text-sm font-medium text-gray-700

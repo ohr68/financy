@@ -1,11 +1,14 @@
-import { useQuery, useMutation } from '@apollo/client'
-import { LIST_CATEGORIES } from '../graphql/queries'
+
+import { LIST_CATEGORIES } from '../graphql/queries/category-queries'
 import {
   CREATE_CATEGORY,
   UPDATE_CATEGORY,
   DELETE_CATEGORY,
-} from '../graphql/mutations'
-import type { Category, CreateCategoryInput, UpdateCategoryInput } from '../types/category'
+} from '../graphql/mutations/category-mutations'
+import type { Category } from '../@types/categories/category'
+import type { CreateCategoryInput } from '../@types/categories/create-category-input'
+import type { UpdateCategoryInput } from '../@types/categories/update-category-input'
+import { useMutation, useQuery } from '@apollo/client/react'
 
 export function useCategories() {
   const { data, loading, error, refetch } = useQuery<{ listCategories: Category[] }>(

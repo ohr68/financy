@@ -1,16 +1,20 @@
-import { useQuery, useMutation } from '@apollo/client'
-import { LIST_TRANSACTIONS } from '../graphql/queries'
-import {
-  CREATE_TRANSACTION,
-  UPDATE_TRANSACTION,
-  DELETE_TRANSACTION,
-} from '../graphql/mutations'
-import type { Transaction, CreateTransactionInput, UpdateTransactionInput } from '../types/transaction'
+import type { Transaction } from '../@types/transactions/transaction'
+import { LIST_TRANSACTIONS } from '../graphql/queries/transaction-queries'
+import { CREATE_TRANSACTION, DELETE_TRANSACTION, UPDATE_TRANSACTION } from '../graphql/mutations/transaction-mutations'
+import type { CreateTransactionInput } from '../@types/transactions/create-transaction-input'
+import type { UpdateTransactionInput } from '../@types/transactions/update-transaction-input'
+import { useMutation, useQuery } from '@apollo/client/react'
+import type { TypedDocumentNode } from '@apollo/client'
+
+type ListTransactionsResponse = {
+  listTransactions: Transaction[]
+}
+
+const typedListTransactions =
+  LIST_TRANSACTIONS as TypedDocumentNode<ListTransactionsResponse>
 
 export function useTransactions() {
-  const { data, loading, error, refetch } = useQuery<{ listTransactions: Transaction[] }>(
-    LIST_TRANSACTIONS
-  )
+  const { data, loading, error, refetch } = useQuery(typedListTransactions)
 
   const [createTransactionMutation] = useMutation(CREATE_TRANSACTION, {
     refetchQueries: [{ query: LIST_TRANSACTIONS }],

@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react'
 import { Plus } from 'lucide-react'
-import { useTransactions } from '../hooks/useTransactions'
-import { useCategories } from '../hooks/useCategories'
+import { useTransactions } from '../hooks/use-transactions'
+import { useCategories } from '../hooks/use-categories'
 import { TransactionsFilters } from '../components/transactions/transaction-filters'
 import { TransactionsTable } from '../components/transactions/transactions-table'
-import { CreateTransactionModal } from '../components/CreateTransactionModal'
-import type { Transaction, TransactionType } from '../types/transaction'
+import type { TransactionType } from '../@types/transactions/transaction-type'
+import type { Transaction } from '../@types/transactions/transaction'
+import { CreateTransactionModal } from '../components/transactions/create-transaction-modal'
 
 export function TransactionsPage() {
   const { transactions, loading, deleteTransaction } = useTransactions()

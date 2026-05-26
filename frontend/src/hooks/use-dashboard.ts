@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useTransactions } from './useTransactions'
+import { useTransactions } from './use-transactions'
 
 export function useDashboard() {
   const { transactions, loading, error } = useTransactions()

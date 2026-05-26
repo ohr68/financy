@@ -1,8 +1,8 @@
 import { Trash2, Pencil, CircleAlert } from 'lucide-react'
-import type { Transaction } from '../types/transaction'
-import { CategoryBadge } from './CategoryBadge'
-import { CategoryIcon } from './CategoryIcon'
-import type { CategoryColor } from '../types/category'
+import { CategoryBadge } from '../categories/category-badge'
+import { CategoryIcon } from '../categories/category-icon'
+import type { Transaction } from '../../@types/transactions/transaction'
+import type { CategoryColor } from '../../@types/categories/category-color'
 
 interface TransactionRowProps {
   transaction: Transaction

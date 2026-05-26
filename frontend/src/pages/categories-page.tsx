@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
-import { useCategories } from '../hooks/useCategories'
+import { useCategories } from '../hooks/use-categories'
 import { CategorySummaryCards } from '../components/categories/category-summary-cards'
 import { CategoryCard } from '../components/categories/category-card'
 import { CreateCategoryModal } from '../components/categories/create-category-modal'
-import type { Category } from '../types/category'
+import type { Category } from '../@types/categories/category'
 
 export function CategoriesPage() {
   const { categories, loading, deleteCategory } = useCategories()

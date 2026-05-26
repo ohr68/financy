@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react'
-import { LogOut } from 'lucide-react'
+import { LogOut, Mail, User } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { useUser } from '../hooks/useUser'
-import { useAuthContext } from '../contexts/auth-context'
+import { useUser } from '../hooks/use-user'
 import { AuthCard } from '../components/auth/auth-card'
 import { TextField } from '../components/text-field'
 
 export function AccountPage() {
   const { user, loading } = useUser()
-  const { logout } = useAuthContext()
+  //const { logout } = useAuthStore()
   const navigate = useNavigate()
 
   const [name, setName] = useState('')
@@ -25,12 +24,11 @@ export function AccountPage() {
     .toUpperCase() ?? '??'
 
   function handleLogout() {
-    logout()
+    //logout()
     navigate('/login')
   }
 
   function handleSave() {
-    // TODO: wire up update user mutation when available in schema
     console.log('save', { name })
   }
 
@@ -59,18 +57,20 @@ export function AccountPage() {
           <div className="flex flex-col gap-4">
             <TextField
               label="Nome completo"
+              name='name'
               value={name}
               onChange={(e) => setName(e.target.value)}
-              icon={<span className="text-sm">👤</span>}
+              icon={<User size={16} />}
             />
 
             <TextField
               label="E-mail"
+              name='email'
               value={user?.email ?? ''}
               readOnly
               disabled
               helperText="O e-mail não pode ser alterado"
-              icon={<span className="text-sm">✉️</span>}
+              icon={<Mail size={16} />}
             />
 
             <button
