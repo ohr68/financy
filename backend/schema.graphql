@@ -98,17 +98,14 @@ type TransactionModel {
   amount: Float!
   category: CategoryModel
   categoryId: String!
-  countCategories: Float!
-  countTransactions: Float!
+  countTransactions: Float
   createdAt: DateTimeISO!
   date: DateTimeISO!
   description: String
   id: ID!
   monthlyExpenses: Float!
   monthlyIncomes: Float!
-  mostUsedCategory: MostUsedCategoryOutput
   totalBalance: Float!
-  transactions: [TransactionModel!]!
   type: TransactionType!
   updatedAt: DateTimeISO
   user: UserModel

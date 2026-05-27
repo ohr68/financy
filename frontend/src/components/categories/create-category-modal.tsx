@@ -1,50 +1,10 @@
 import { useState } from 'react'
-import {
-  BaggageClaim,
-  BookOpen,
-  Car,
-  Dumbbell,
-  Gift,
-  HeartPulse,
-  House,
-  Luggage,
-  Mailbox,
-  PawPrint,
-  PiggyBank,
-  ReceiptText,
-  ShoppingCart,
-  Ticket,
-  ToolCase,
-  Utensils,
-  X
-} from 'lucide-react'
-
 import { useCategories } from '../../hooks/use-categories'
 import { TextField } from '../text-field'
 import type { CategoryColor } from '../../@types/categories/category-color'
-
-const ICON_MAP = {
-  Luggage,
-  Car,
-  HeartPulse,
-  PiggyBank,
-  ShoppingCart,
-  Ticket,
-  ToolCase,
-  Utensils,
-  PawPrint,
-  House,
-  Gift,
-  Dumbbell,
-  BookOpen,
-  BaggageClaim,
-  Mailbox,
-  ReceiptText
-} as const
-
-type IconName = keyof typeof ICON_MAP
-
-const ICONS = Object.keys(ICON_MAP) as IconName[]
+import { toast } from 'sonner'
+import { CATEGORY_ICON_MAP, CATEGORY_ICONS, type CategoryIconName } from '../../@types/categories/category-icons'
+import { X } from 'lucide-react'
 
 const COLORS: { label: string; value: CategoryColor; bg: string }[] = [
   { label: 'Verde', value: 'Green', bg: 'bg-green' },
@@ -66,11 +26,13 @@ export function CreateCategoryModal({ open, onClose }: CreateCategoryModalProps)
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [icon, setIcon] = useState<IconName>('Luggage')
+  const [icon, setIcon] = useState<CategoryIconName>('Luggage')
   const [color, setColor] = useState<CategoryColor>('Green')
   const [loading, setLoading] = useState(false)
 
-  async function handleSubmit() {
+  const handleSubmit = async (e: React.SubmitEvent) => {
+    e.preventDefault()
+
     if (!title) return
 
     setLoading(true)
@@ -84,6 +46,8 @@ export function CreateCategoryModal({ open, onClose }: CreateCategoryModalProps)
 
       onClose()
       resetForm()
+
+      toast.success('Categoria criada com sucesso!')
     } finally {
       setLoading(false)
     }
@@ -98,7 +62,7 @@ export function CreateCategoryModal({ open, onClose }: CreateCategoryModalProps)
 
   if (!open) return null
 
-  const SelectedIcon = ICON_MAP[icon]
+  const SelectedIcon = CATEGORY_ICON_MAP[icon]
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -123,89 +87,97 @@ export function CreateCategoryModal({ open, onClose }: CreateCategoryModalProps)
         </div>
 
         <div className="flex flex-col gap-4">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <TextField
+              label="Título"
+              name='title'
+              placeholder="Ex. Alimentação"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              icon={<SelectedIcon size={16} />}
+            />
 
-          <TextField
-            label="Título"
-            placeholder="Ex. Alimentação"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            icon={<SelectedIcon size={16} />}
-          />
+            <TextField
+              label="Descrição"
+              name='description'
+              placeholder="Descrição da categoria"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              helperText='Opcional'
+            />
 
-          <TextField
-            label="Descrição"
-            placeholder="Descrição da categoria"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
+            <div className="flex flex-col gap-2 py-1">
+              <label className="text-sm font-medium text-gray-700">
+                Ícone
+              </label>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-gray-700">
-              Ícone
-            </label>
+              <div className="grid grid-cols-8 gap-2">
+                {CATEGORY_ICONS.map((iconName) => {
+                  const IconComponent = CATEGORY_ICON_MAP[iconName]
 
-            <div className="grid grid-cols-8 gap-2">
-              {ICONS.map((iconName) => {
-                const IconComponent = ICON_MAP[iconName]
-
-                return (
-                  <button
-                    key={iconName}
-                    onClick={() => setIcon(iconName)}
-                    className={`
+                  return (
+                    <button
+                      type="button"
+                      key={iconName}
+                      onClick={() => setIcon(iconName)}
+                      className={`
                       flex h-9 w-9 items-center justify-center 
-                      rounded-lg text-gray-600 
+                      rounded-lg 
                       hover:bg-gray-200 transition cursor-pointer
                       ${icon === iconName
-                        ? 'ring-2 ring-brand bg-brand-light'
-                        : 'ring-2 ring-gray-300 bg-white'
-                      }
+                          ? 'ring ring-brand bg-brand-light text-gray-600'
+                          : 'ring ring-gray-300 bg-white text-gray-500'
+                        }
                     `}
-                  >
-                    <IconComponent size={18} />
-                  </button>
-                )
-              })}
+                    >
+                      <IconComponent size={18} />
+                    </button>
+                  )
+                })}
+              </div>
             </div>
-          </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-gray-700">
-              Cor
-            </label>
+            <div className="flex flex-col gap-2 py-1">
+              <label className="text-sm font-medium text-gray-700">
+                Cor
+              </label>
 
-            <div className="flex w-full gap-2">
-              {COLORS.map((c) => (
-                <button
-                  key={c.value}
-                  onClick={() => setColor(c.value)}
-                  className={`
+              <div className="flex w-full gap-2">
+                {COLORS.map((c) => (
+                  <button
+                    type='button'
+                    key={c.value}
+                    onClick={() => setColor(c.value)}
+                    className={`
                     flex-1 rounded-md p-1
                     cursor-pointer transition
                     ${color === c.value
-                                  ? 'ring-2 ring-brand'
-                                  : 'ring-1 ring-gray-300'
-                                }
+                        ? 'ring ring-brand'
+                        : 'ring ring-gray-300'
+                      }
                   `}
-                >
-                  <div
-                    className={`
+                  >
+                    <div
+                      className={`
                       h-6 w-full rounded-sm ${c.bg}
                     `}
-                  />
-                </button>
-              ))}
+                    />
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="mt-2 h-12 w-full rounded-lg bg-brand text-white text-sm font-semibold hover:bg-brand-dark transition cursor-pointer disabled:opacity-60"
-          >
-            {loading ? 'Salvando...' : 'Salvar'}
-          </button>
-
+            <button
+              disabled={loading}
+              className="mt-2 h-12 w-full rounded-lg bg-brand 
+              text-white text-sm 
+              font-semibold hover:bg-brand-dark 
+              transition cursor-pointer 
+              disabled:opacity-60"
+            >
+              {loading ? 'Salvando...' : 'Salvar'}
+            </button>
+          </form>
         </div>
       </div>
     </div>

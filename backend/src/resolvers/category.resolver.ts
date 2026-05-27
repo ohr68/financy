@@ -11,9 +11,8 @@ import { CategoryService } from "../services/category.service"
 import { CreateCategoryInput, UpdateCategoryInput } from "../dtos/input/category.input"
 import { MostUsedCategoryOutput } from "../dtos/output/category.output"
 
-@Resolver(() => TransactionModel)
+@Resolver(() => CategoryModel)
 @UseMiddleware(IsAuth)
-
 export class CategoryResolver {
   private categoryService: CategoryService = new CategoryService()
   private userService: UserService = new UserService()

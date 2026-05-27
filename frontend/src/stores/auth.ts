@@ -15,6 +15,7 @@ interface AuthState {
   isAuthenticated: boolean
   register: (data: RegisterInput) => Promise<boolean>
   login: (data: LoginInput) => Promise<boolean>
+  logout: () => void
 }
 
 type RegisterMutationVariables = {
@@ -119,6 +120,16 @@ export const useAuthStore = create<AuthState>()(
           console.error("Erro ao fazer o cadastro:", error);
           throw error
         }
+      },
+
+      logout: () => {
+        set({
+          user: null,
+          token: null,
+          isAuthenticated: false
+        })
+
+        apolloClient.clearStore()
       }
     }),
     {

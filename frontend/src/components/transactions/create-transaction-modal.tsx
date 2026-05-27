@@ -4,6 +4,8 @@ import { useTransactions } from '../../hooks/use-transactions'
 import { useCategories } from '../../hooks/use-categories'
 import { TextField } from '../text-field'
 import type { TransactionType } from '../../@types/transactions/transaction-type'
+import { CATEGORY_ICON_MAP } from '../../@types/categories/category-icons'
+import { Select } from '../select'
 
 interface CreateTransactionModalProps {
   open: boolean
@@ -20,6 +22,12 @@ export function CreateTransactionModal({ open, onClose }: CreateTransactionModal
   const [date, setDate] = useState('')
   const [categoryId, setCategoryId] = useState('')
   const [loading, setLoading] = useState(false)
+
+  const options = categories.map(cat => ({
+    value: cat.id,
+    label: cat.title,
+    icon: CATEGORY_ICON_MAP[cat.icon as keyof typeof CATEGORY_ICON_MAP]
+  }))
 
   async function handleSubmit() {
     if (!description || !amount || !date || !categoryId) return
@@ -62,32 +70,30 @@ export function CreateTransactionModal({ open, onClose }: CreateTransactionModal
           </button>
         </div>
 
-        <div className="flex gap-2 my-4">
+        <div className="flex gap-2 my-4 border border-gray-200 rounded-lg p-1">
           <button
             onClick={() => setType('Expense')}
-            className={`flex-1 flex items-center justify-center gap-2 rounded-lg border py-2 text-sm font-medium transition cursor-pointer ${
-              type === 'Expense'
-                ? 'border-red'
-                : 'border-gray-200 text-gray-500 hover:bg-gray-50'
-            }`}
+            className={`flex-1 flex items-center justify-center gap-2 rounded-lg py-2 text-sm font-medium transition cursor-pointer ${type === 'Expense'
+              ? 'border border-red'
+              : 'text-gray-500 hover:bg-gray-50'
+              }`}
           >
             <ArrowDownCircle size={16} className={
-              type === 'Expense' 
-              ? `text-red`
-              : `text-gray-400`}/> Despesa
+              type === 'Expense'
+                ? `text-red`
+                : `text-gray-400`} /> Despesa
           </button>
           <button
             onClick={() => setType('Revenue')}
-            className={`flex-1 flex items-center justify-center gap-2 rounded-lg border py-2 text-sm font-medium transition cursor-pointer ${
-              type === 'Revenue'
-                ? 'border-green'
-                : 'border-gray-200 text-gray-500 hover:bg-gray-50'
-            }`}
+            className={`flex-1 flex items-center justify-center gap-2 rounded-lg py-2 text-sm font-medium transition cursor-pointer ${type === 'Revenue'
+              ? 'border border-green'
+              : 'text-gray-500 hover:bg-gray-50'
+              }`}
           >
             <ArrowUpCircle size={16} className={
-              type === 'Revenue' 
-              ? `text-success`
-              : `text-gray-400`}/> Receita
+              type === 'Revenue'
+                ? `text-success`
+                : `text-gray-400`} /> Receita
           </button>
         </div>
 
@@ -115,21 +121,12 @@ export function CreateTransactionModal({ open, onClose }: CreateTransactionModal
             />
           </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Categoria</label>
-            <select
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
-              className="h-12 w-full rounded-lg border border-gray-300 px-4 text-sm outline-none transition focus:border-blue-500 focus:border-2 bg-white"
-            >
-              <option value="">Selecione</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.icon} {cat.title}
-                </option>
-              ))}
-            </select>
-          </div>
+          <Select
+            label="Categoria"
+            value={categoryId}
+            onChange={setCategoryId}
+            options={options}
+          />
 
           <button
             onClick={handleSubmit}

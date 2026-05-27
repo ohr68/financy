@@ -1,4 +1,3 @@
-
 import { LIST_CATEGORIES } from '../graphql/queries/category-queries'
 import {
   CREATE_CATEGORY,
@@ -9,11 +8,17 @@ import type { Category } from '../@types/categories/category'
 import type { CreateCategoryInput } from '../@types/categories/create-category-input'
 import type { UpdateCategoryInput } from '../@types/categories/update-category-input'
 import { useMutation, useQuery } from '@apollo/client/react'
+import type { TypedDocumentNode } from '@apollo/client'
+
+type ListCategoriesResponse = {
+  listCategories: Category[]
+}
+
+const typedListCategories =
+  LIST_CATEGORIES as TypedDocumentNode<ListCategoriesResponse>
 
 export function useCategories() {
-  const { data, loading, error, refetch } = useQuery<{ listCategories: Category[] }>(
-    LIST_CATEGORIES
-  )
+  const { data, loading, error, refetch } = useQuery(typedListCategories)
 
   const [createCategoryMutation] = useMutation(CREATE_CATEGORY, {
     refetchQueries: [{ query: LIST_CATEGORIES }],

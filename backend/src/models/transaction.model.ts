@@ -41,6 +41,9 @@ export class TransactionModel {
   @Field(() => Number)
   monthlyExpenses?: number
 
+  @Field(() => Number, { nullable: true })
+  countTransactions?: number
+
   @Field(() => UserModel, { nullable: true })
   user?: UserModel
 

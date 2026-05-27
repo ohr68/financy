@@ -13,11 +13,6 @@ export const LIST_TRANSACTIONS = gql`
       monthlyExpenses
       monthlyIncomes
       countTransactions
-      countCategories
-      mostUsedCategory {
-        icon
-        title
-      }
       category {
         id
         title

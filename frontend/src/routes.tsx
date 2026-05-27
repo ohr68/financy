@@ -6,6 +6,7 @@ import { DashboardPage } from './pages/dashboard-page'
 import { TransactionsPage } from './pages/transactions-page'
 import { CategoriesPage } from './pages/categories-page'
 import { AccountPage } from './pages/account-page'
+import { ProtectedRoute } from './components/protected-route'
 
 export const router = createBrowserRouter([
   {
@@ -16,28 +17,34 @@ export const router = createBrowserRouter([
     path: '/register',
     element: <RegisterPage />,
   },
+
   {
-    element: <AppLayout />,
+    element: <ProtectedRoute />,
     children: [
       {
-        path: '/',
-        element: <Navigate to="/dashboard" replace />,
-      },
-      {
-        path: '/dashboard',
-        element: <DashboardPage />,
-      },
-      {
-        path: '/transactions',
-        element: <TransactionsPage />,
-      },
-      {
-        path: '/categories',
-        element: <CategoriesPage />,
-      },
-      {
-        path: '/account',
-        element: <AccountPage />,
+        element: <AppLayout />,
+        children: [
+          {
+            path: '/',
+            element: <Navigate to="/dashboard" replace />,
+          },
+          {
+            path: '/dashboard',
+            element: <DashboardPage />,
+          },
+          {
+            path: '/transactions',
+            element: <TransactionsPage />,
+          },
+          {
+            path: '/categories',
+            element: <CategoriesPage />,
+          },
+          {
+            path: '/account',
+            element: <AccountPage />,
+          },
+        ],
       },
     ],
   },

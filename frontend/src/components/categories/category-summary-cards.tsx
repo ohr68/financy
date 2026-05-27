@@ -39,9 +39,12 @@ export function CategorySummaryCards({ categories }: CategorySummaryCardsProps) 
 
       <div className="rounded-2xl border border-gray-200 bg-white p-6 flex items-center gap-4">
         {mostUsed && (
-          <CategoryIcon icon={mostUsed.icon} color={mostUsed.color} size="lg" />
+          <CategoryIcon 
+            icon={mostUsed.icon} 
+            color={mostUsed.color} 
+            withBackground={false} size="lg" />
         )}
-        <div>
+        <div className='flex flex-col space-y-1.5'>
           <p className="text-3xl font-bold text-gray-800">{mostUsed?.title ?? '—'}</p>
           <p className="text-xs uppercase tracking-wider text-gray-400 font-medium">Categoria mais utilizada</p>
         </div>

@@ -73,4 +73,9 @@ export class TransactionResolver {
       transaction.userId,
     TransactionType.Expense)
   }
+
+  @FieldResolver(() => Number)
+  async countTransactions(@Root() category: CategoryModel): Promise<number> {
+    return this.transactionService.countTransactions(category.userId)
+  }
 }
