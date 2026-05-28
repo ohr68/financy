@@ -1,17 +1,21 @@
 import { Search } from 'lucide-react'
-import type { Category } from '../types/category'
-import type { TransactionType } from '../types/transaction'
+import type { TransactionType } from '../../@types/transactions/transaction-type'
+import type { Category } from '../../@types/categories/category'
+import { Select } from '../select'
+import { TextField } from '../text-field'
+import { MonthPicker } from '../month-picker'
 
 interface TransactionsFiltersProps {
   search: string
-  onSearchChange: (v: string) => void
   typeFilter: TransactionType | 'all'
-  onTypeChange: (v: TransactionType | 'all') => void
   categoryFilter: string
-  onCategoryChange: (v: string) => void
   monthFilter: string
-  onMonthChange: (v: string) => void
   categories: Category[]
+
+  onSearchChange: (v: string) => void
+  onTypeChange: (v: TransactionType | 'all') => void
+  onCategoryChange: (v: string) => void
+  onMonthChange: (v: string) => void
 }
 
 export function TransactionsFilters({
@@ -25,58 +29,66 @@ export function TransactionsFilters({
   onMonthChange,
   categories,
 }: TransactionsFiltersProps) {
+
+  const transactionTypeOptions = [
+    {
+      value: 'all',
+      label: 'Todos',
+    },
+    {
+      value: 'Expense',
+      label: 'Saída',
+    },
+    {
+      value: 'Revenue',
+      label: 'Entrada',
+    },
+  ]
+
+  const categoryOptions = [
+    {
+      value: '',
+      label: 'Todas',
+    },
+
+    ...categories.map((cat) => ({
+      value: cat.id,
+      label: cat.title,
+    })),
+  ]
+
   return (
     <div className="grid grid-cols-4 gap-4">
       <div className="flex flex-col gap-1">
-        <label className="text-xs font-medium text-gray-600">Buscar</label>
-        <div className="relative">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Buscar por descrição"
-            value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="h-10 w-full rounded-lg border border-gray-300 pl-9 pr-4 text-sm outline-none focus:border-blue-500 focus:border-2 transition"
-          />
-        </div>
+        <TextField
+          label='Buscar'
+          value={search}
+          onChange={(e) => onSearchChange(e.target.value)}
+          placeholder="Buscar por descrição"
+          icon={<Search size={14} />}
+        />
       </div>
 
-      <div className="flex flex-col gap-1">
-        <label className="text-xs font-medium text-gray-600">Tipo</label>
-        <select
-          value={typeFilter}
-          onChange={(e) => onTypeChange(e.target.value as TransactionType | 'all')}
-          className="h-10 w-full rounded-lg border border-gray-300 px-3 text-sm outline-none focus:border-blue-500 focus:border-2 transition bg-white"
-        >
-          <option value="all">Todos</option>
-          <option value="Expense">Saída</option>
-          <option value="Revenue">Entrada</option>
-        </select>
-      </div>
+      <Select
+        label="Tipo"
+        value={typeFilter}
+        onChange={(v) => onTypeChange(v as TransactionType | 'all')}
+        options={transactionTypeOptions}
+      />
+
+      <Select
+        label="Categoria"
+        value={categoryFilter}
+        onChange={onCategoryChange}
+        options={categoryOptions}
+      />
 
       <div className="flex flex-col gap-1">
-        <label className="text-xs font-medium text-gray-600">Categoria</label>
-        <select
-          value={categoryFilter}
-          onChange={(e) => onCategoryChange(e.target.value)}
-          className="h-10 w-full rounded-lg border border-gray-300 px-3 text-sm outline-none focus:border-blue-500 focus:border-2 transition bg-white"
-        >
-          <option value="">Todas</option>
-          {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.title}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <label className="text-xs font-medium text-gray-600">Período</label>
-        <input
-          type="month"
+        <MonthPicker
+          label="Período"
           value={monthFilter}
-          onChange={(e) => onMonthChange(e.target.value)}
-          className="h-10 w-full rounded-lg border border-gray-300 px-3 text-sm outline-none focus:border-blue-500 focus:border-2 transition"
+          onChange={onMonthChange}
+          placeholder="Selecione um período"
         />
       </div>
     </div>

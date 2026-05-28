@@ -3,14 +3,15 @@ import type { CreateTransactionInput, UpdateTransactionInput } from "../dtos/inp
 import type { TransactionType } from "../generated/prisma/enums"
 
 export class TransactionService {
-  async listTransactions() {
+  async listTransactions(userId: string) {
     return await prismaClient.transaction.findMany()
   }
 
-  async findByCategoryId(categoryId: string) {
+  async findByCategoryId(categoryId: string, userId: string) {
     return await prismaClient.transaction.findMany({
       where: {
-        categoryId
+        categoryId,
+        userId
       }
     })
   }
@@ -78,39 +79,38 @@ export class TransactionService {
   }
 
   async mostUsedCategory(userId: string) {
-    const [top] = await prismaClient.transaction.groupBy({
+    const top = await prismaClient.transaction.groupBy({
       by: ['categoryId'],
 
       where: {
-        userId
+        userId,
       },
 
       _count: {
-        categoryId: true
+        categoryId: true,
       },
 
       orderBy: {
         _count: {
-          categoryId: 'desc'
-        }
+          categoryId: 'desc',
+        },
       },
 
-      take: 1
+      take: 1,
     })
 
-    if (!top) {
-      return null
-    }
+    const best = top[0]
+    if (!best) return null
 
     return prismaClient.category.findUnique({
       where: {
-        id: top.categoryId
+        id: best.categoryId,
       },
-
       select: {
         title: true,
-        icon: true
-      }
+        icon: true,
+        color: true
+      },
     })
   }
 
@@ -129,15 +129,131 @@ export class TransactionService {
       1
     )
 
-    return await prismaClient.transaction.aggregate({
+    const result = await prismaClient.transaction.aggregate({
       where: {
         userId,
         type,
-        gte: startOfMonth,
-        lt: startOfNextMonth
+
+        date: {
+          gte: startOfMonth,
+          lt: startOfNextMonth
+        }
       },
+
       _sum: {
         amount: true
+      }
+    })
+
+    return result._sum.amount ?? 0
+  }
+
+  async getTotalBalance(userId: string) {
+    const [revenues, expenses] = await Promise.all([
+      prismaClient.transaction.aggregate({
+        where: {
+          userId,
+          type: 'Revenue'
+        },
+
+        _sum: {
+          amount: true
+        }
+      }),
+
+      prismaClient.transaction.aggregate({
+        where: {
+          userId,
+          type: 'Expense'
+        },
+
+        _sum: {
+          amount: true
+        }
+      })
+    ])
+
+    const totalRevenue = revenues._sum.amount ?? 0
+    const totalExpense = expenses._sum.amount ?? 0
+
+    return totalRevenue - totalExpense
+  }
+
+  async getCategorySummaries(userId: string) {
+    const result = await prismaClient.transaction.groupBy({
+      by: ['categoryId'],
+      where: { userId },
+
+      _count: {
+        id: true,
+      },
+
+      _sum: {
+        amount: true,
+      },
+    })
+
+    const [income, expenses, categories] = await Promise.all([
+      prismaClient.transaction.groupBy({
+        by: ['categoryId'],
+        where: {
+          userId,
+          type: 'Revenue',
+        },
+        _sum: {
+          amount: true,
+        },
+      }),
+
+      prismaClient.transaction.groupBy({
+        by: ['categoryId'],
+        where: {
+          userId,
+          type: 'Expense',
+        },
+        _sum: {
+          amount: true,
+        },
+      }),
+
+      prismaClient.category.findMany({
+        where: {
+          id: {
+            in: result.map(r => r.categoryId),
+          },
+        },
+
+        select: {
+          id: true,
+          title: true,
+          color: true,
+          icon: true,
+        },
+      }),
+    ])
+
+    return result.map(r => {
+      const incomeRow = income.find(i => i.categoryId === r.categoryId)
+      const expenseRow = expenses.find(e => e.categoryId === r.categoryId)
+
+      const category = categories.find(c => c.id === r.categoryId)
+
+      const totalIncome = incomeRow?._sum.amount ?? 0
+      const totalExpenses = expenseRow?._sum.amount ?? 0
+
+      return {
+        categoryId: r.categoryId,
+
+        title: category?.title ?? '',
+        color: category?.color ?? 'Blue',
+        icon: category?.icon ?? 'Circle',
+
+        totalTransactions: r._count.id,
+
+        totalIncome,
+        totalExpenses,
+
+        net: totalIncome - totalExpenses,
       }
     })
   }

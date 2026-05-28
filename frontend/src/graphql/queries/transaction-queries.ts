@@ -24,3 +24,33 @@ export const LIST_TRANSACTIONS = gql`
     }
   }
 `
+
+export const COUNT_TRANSACTIONS = gql`
+  query CountTransactions {
+    countTransactions
+  }
+`
+
+export const CATEGORY_SUMMARIES = gql`
+  query CategorySummaries {
+    categorySummaries {
+      categoryId
+      title
+      color
+      totalTransactions
+      totalIncome
+      totalExpenses
+      net
+    }
+  }
+`
+
+export const MOST_USED_CATEGORY = gql`
+  query MostUsedCategory {
+    mostUsedCategory {
+      title
+      icon
+      color
+    }
+  }
+`

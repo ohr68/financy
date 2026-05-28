@@ -2,14 +2,21 @@ import { useState } from 'react'
 import { useDashboard } from '../hooks/use-dashboard'
 import { SummaryCards } from '../components/dashboard/summary-cards'
 import { RecentTransactionsList } from '../components/dashboard/recent-transactions-list'
-import { CategoriesSidebar } from '../components/categories/categories-sidebar'
-import { CreateTransactionModal } from '../components/transactions/create-transaction-modal'
+import { CategoriesSidebar } from '../components/dashboard/categories-sidebar'
+import { TransactionModal } from '../components/transactions/transaction-modal'
 
 export function DashboardPage() {
-  const { summary, recentTransactions, categoryBreakdown, loading } = useDashboard()
+  const {
+    summary,
+    recentTransactions,
+    transactionsListLoading,
+    categorySummaries,
+    categorySummariesLoading
+  } = useDashboard()
+  
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  if (loading) {
+  if (transactionsListLoading || categorySummariesLoading) {
     return (
       <div className="flex items-center justify-center py-20 text-gray-400 text-sm">
         Carregando...
@@ -25,15 +32,19 @@ export function DashboardPage() {
         monthlyExpenses={summary.monthlyExpenses}
       />
 
-      <div className="grid grid-cols-[1fr_280px] gap-6">
-        <RecentTransactionsList
-          transactions={recentTransactions}
-          onNewTransaction={() => setIsModalOpen(true)}
-        />
-        <CategoriesSidebar categories={categoryBreakdown} />
+      <div className="grid grid-cols-3 gap-6">
+        <div className='col-span-2'>
+          <RecentTransactionsList
+            transactions={recentTransactions}
+            onNewTransaction={() => setIsModalOpen(true)}
+          />
+        </div>
+        <div>
+          <CategoriesSidebar categories={categorySummaries} />
+        </div>
       </div>
 
-      <CreateTransactionModal
+      <TransactionModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />

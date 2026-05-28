@@ -5,6 +5,7 @@ type TextFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   icon?: ReactNode
   rightIcon?: ReactNode
   helperText?: string
+  error?: boolean
 }
 
 export function TextField({
@@ -13,23 +14,40 @@ export function TextField({
   rightIcon,
   helperText,
   className = '',
+  error = false,
   ...props
 }: TextFieldProps) {
-   const isDisabled = props.disabled
+  const isDisabled = props.disabled
 
   return (
     <div className="flex flex-col group">
-      <label className="mb-2 text-sm font-medium text-gray-700 transition group-focus-within:text-brand!">
+      <label
+        className={`
+          mb-2 text-sm font-medium transition
+          ${
+            error
+              ? 'text-red-500 group-focus-within:text-brand!'
+              : 'text-gray-700 group-focus-within:text-brand!'
+          }
+        `}
+      >
         {label}
       </label>
+
       <div className="relative">
         {icon && (
-          <div className="
-            absolute left-4 top-1/2 -translate-y-1/2
-            text-gray-400 transition
-            group-focus-within:text-brand!
-            group-focus-within:stroke-brand!
-          ">
+          <div
+            className={`
+              absolute left-4 top-1/2 -translate-y-1/2
+              text-gray-400 transition
+              ${
+                error
+                  ? 'text-red-500 group-focus-within:text-brand!'
+                  : 'group-focus-within:text-brand!'
+              }
+              group-focus-within:stroke-brand!
+            `}
+          >
             {icon}
           </div>
         )}
@@ -56,6 +74,7 @@ export function TextField({
           </div>
         )}
       </div>
+
       {helperText && (
         <span className="mt-1 text-xs text-gray-500">
           {helperText}

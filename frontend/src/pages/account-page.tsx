@@ -5,20 +5,26 @@ import { useUser } from '../hooks/use-user'
 import { AuthCard } from '../components/auth/auth-card'
 import { TextField } from '../components/text-field'
 import { useAuthStore } from '../stores/auth'
+import { toast } from 'sonner'
 
 export function AccountPage() {
-  const { user, loading } = useUser()
-  const { logout } = useAuthStore()
+  const { user, loading, updateUser } = useUser()
+
+  const { logout, setUser } = useAuthStore()
+
   const navigate = useNavigate()
 
   const [name, setName] = useState('')
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
-    if (user?.name) setName(user.name)
+    if (user?.name) {
+      setName(user.name)
+    }
   }, [user])
 
   const initials = user?.name
-    .split(' ')
+    ?.split(' ')
     .map((n) => n[0])
     .slice(0, 2)
     .join('')
@@ -29,8 +35,27 @@ export function AccountPage() {
     navigate('/login')
   }
 
-  function handleSave() {
-    console.log('save', { name })
+  async function handleSave() {
+    if (!name.trim()) return
+
+    setSaving(true)
+
+    try {
+      await updateUser({
+        name,
+      })
+
+      setUser({
+        ...user!,
+        name,
+      })
+
+      toast.success('Perfil atualizado com sucesso!')
+    } catch {
+      toast.error('Erro ao atualizar perfil')
+    } finally {
+      setSaving(false)
+    }
   }
 
   if (loading) {
@@ -46,13 +71,23 @@ export function AccountPage() {
       <div className="w-full max-w-sm">
         <AuthCard>
           <div className="flex flex-col items-center gap-2 mb-6">
-            <div className="flex h-16 w-16 items-center justify-center 
-              rounded-full bg-gray-200 text-xl 
-              font-bold text-gray-700">
+            <div
+              className="
+                flex h-16 w-16 items-center justify-center
+                rounded-full bg-gray-200 text-xl
+                font-bold text-gray-700
+              "
+            >
               {initials}
             </div>
-            <p className="font-semibold text-gray-800">{user?.name}</p>
-            <p className="text-sm text-gray-400">{user?.email}</p>
+
+            <p className="font-semibold text-gray-800">
+              {name}
+            </p>
+
+            <p className="text-sm text-gray-400">
+              {user?.email}
+            </p>
           </div>
 
           <div className="h-px bg-gray-100 mb-6" />
@@ -60,7 +95,7 @@ export function AccountPage() {
           <div className="flex flex-col gap-4">
             <TextField
               label="Nome completo"
-              name='name'
+              name="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               icon={<User size={16} />}
@@ -68,7 +103,7 @@ export function AccountPage() {
 
             <TextField
               label="E-mail"
-              name='email'
+              name="email"
               value={user?.email ?? ''}
               readOnly
               disabled
@@ -78,23 +113,33 @@ export function AccountPage() {
 
             <button
               onClick={handleSave}
-              className="h-12 w-full rounded-lg bg-brand text-white 
-              text-sm font-semibold 
-              hover:bg-brand-dark 
-              transition cursor-pointer"
+              disabled={saving}
+              className="
+                h-12 w-full rounded-lg bg-brand text-white
+                text-sm font-semibold
+                hover:bg-brand-dark
+                transition cursor-pointer
+                disabled:opacity-60
+              "
             >
-              Salvar alterações
+              {saving
+                ? 'Salvando...'
+                : 'Salvar alterações'}
             </button>
 
             <button
               onClick={handleLogout}
-              className="flex h-12 w-full items-center justify-center 
-              gap-2 rounded-lg border border-gray-200 text-sm 
-              font-medium text-danger 
-              hover:bg-red-light 
-              transition cursor-pointer"
+              className="
+                flex h-12 w-full items-center justify-center
+                gap-2 rounded-lg border border-gray-200 text-sm
+                text-gray-700
+                font-medium
+                hover:border-gray-200
+                hover:bg-gray-300
+                transition cursor-pointer
+              "
             >
-              <LogOut size={16} />
+              <LogOut className="text-danger" size={16} />
               Sair da conta
             </button>
           </div>

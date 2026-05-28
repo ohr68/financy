@@ -1,8 +1,19 @@
 import { useMemo } from 'react'
 import { useTransactions } from './use-transactions'
+import type { CategorySummary } from '../@types/categories/category-summary'
+import type { TypedDocumentNode } from '@apollo/client'
+import { CATEGORY_SUMMARIES } from '../graphql/queries/transaction-queries'
+import { useQuery } from '@apollo/client/react'
+
+type CategorySummariesResponse = {
+  categorySummaries: CategorySummary[]
+}
+
+const typedCategorySummaries =
+  CATEGORY_SUMMARIES as TypedDocumentNode<CategorySummariesResponse>
 
 export function useDashboard() {
-  const { transactions, loading, error } = useTransactions()
+  const { transactions, transactionsListLoading, transactionsListError } = useTransactions()
 
   const summary = useMemo(() => {
     if (!transactions.length) {
@@ -29,43 +40,31 @@ export function useDashboard() {
   }, [transactions])
 
   const recentTransactions = useMemo(
-    () => transactions.slice(0, 5),
+    () =>
+      [...transactions]
+        .sort(
+          (a, b) =>
+            new Date(b.date).getTime() - new Date(a.date).getTime()
+        )
+        .slice(0, 5),
     [transactions]
   )
 
-  const categoryBreakdown = useMemo(() => {
-    const map = new Map<string, { title: string; icon: string; color: string; total: number; count: number }>()
-
-    for (const tx of transactions) {
-      if (!tx.category) continue
-
-      const key = tx.category.id
-      const existing = map.get(key)
-
-      if (existing) {
-        existing.total += tx.type === 'Expense' ? tx.amount : 0
-        existing.count += 1
-      } else {
-        map.set(key, {
-          title: tx.category.title,
-          icon: tx.category.icon,
-          color: tx.category.color,
-          total: tx.type === 'Expense' ? tx.amount : 0,
-          count: 1,
-        })
-      }
-    }
-
-    return Array.from(map.values())
-      .sort((a, b) => b.total - a.total)
-      .slice(0, 5)
-  }, [transactions])
+    const {
+      data: categorySummaries,
+      loading: categorySummariesLoading,
+      error: categorySummariesError,
+      refetch: categorySummariesRefetch
+    } = useQuery(typedCategorySummaries)
 
   return {
     summary,
     recentTransactions,
-    categoryBreakdown,
-    loading,
-    error,
+    transactionsListLoading,
+    transactionsListError,
+    categorySummaries: categorySummaries?.categorySummaries ?? [],
+    categorySummariesLoading,
+    categorySummariesError,
+    categorySummariesRefetch
   }
 }

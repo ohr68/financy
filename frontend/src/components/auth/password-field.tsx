@@ -4,11 +4,13 @@ import { TextField } from '../text-field'
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
   label: string
+  error?: boolean
 }
 
 export function PasswordField(
   {
     label,
+    error = false,
     ...inputProps
   }: Props) {
   const [show, setShow] = useState(false)
@@ -19,6 +21,7 @@ export function PasswordField(
       label={label}
       type={show ? 'text' : 'password'}
       icon={<Lock size={18} />}
+      error={error}
       rightIcon={
         <button
           type="button"

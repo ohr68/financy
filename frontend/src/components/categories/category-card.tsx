@@ -47,11 +47,11 @@ export function CategoryCard({ category, onDelete, onEdit }: CategoryCardProps) 
       </div>
 
       <div>
-        <p className="font-semibold text-gray-800">
+        <p title={category.title} className="font-semibold text-gray-800">
           {category.title}
         </p>
 
-        <p className="text-sm text-gray-500 mt-0.5">
+        <p title={category.description} className="text-sm text-gray-500 mt-0.5 truncate">
           {category.description}
         </p>
       </div>

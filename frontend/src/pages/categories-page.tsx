@@ -3,23 +3,37 @@ import { Plus } from 'lucide-react'
 import { useCategories } from '../hooks/use-categories'
 import { CategorySummaryCards } from '../components/categories/category-summary-cards'
 import { CategoryCard } from '../components/categories/category-card'
-import { CreateCategoryModal } from '../components/categories/create-category-modal'
+import { CategoryModal } from '../components/categories/category-modal'
 import type { Category } from '../@types/categories/category'
+import { ConfirmDialog } from '../components/confirm-dialog'
+import { toast } from 'sonner'
+import { useTransactions } from '../hooks/use-transactions'
 
 export function CategoriesPage() {
-  const { categories, loading, deleteCategory } = useCategories()
+  const { categories, categoryListLoading, deleteCategory, mostUsedCategory } = useCategories()
+  const { countTransactions: transactionsCount } = useTransactions()
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null)
+  const [deleteId, setDeleteId] = useState<string | null>(null)
 
   function handleEdit(category: Category) {
-    // TODO: open edit modal with category data
-    console.log('edit', category)
+    setEditingCategory(category)
+    setIsCreateModalOpen(true)
   }
 
-  async function handleDelete(id: string) {
-    await deleteCategory(id)
+  function handleDelete(id: string) {
+    setDeleteId(id)
   }
 
-  if (loading) {
+  async function confirmDelete() {
+    if (!deleteId) return
+    await deleteCategory(deleteId)
+    setDeleteId(null)
+
+    toast.success('Categoria excluída com sucesso!')
+  }
+
+  if (categoryListLoading) {
     return (
       <div className="flex items-center justify-center py-20 text-gray-400 text-sm">
         Carregando...
@@ -43,7 +57,11 @@ export function CategoriesPage() {
         </button>
       </div>
 
-      <CategorySummaryCards categories={categories} />
+      <CategorySummaryCards
+        categories={categories}
+        mostUsedCategory={mostUsedCategory}
+        transactionsCount={transactionsCount}
+      />
 
       <div className="grid grid-cols-4 gap-4">
         {categories.map((category) => (
@@ -56,9 +74,21 @@ export function CategoriesPage() {
         ))}
       </div>
 
-      <CreateCategoryModal
+      <CategoryModal
         open={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
+        onClose={() => {
+          setIsCreateModalOpen(false)
+          setEditingCategory(null)
+        }}
+        initialData={editingCategory}
+      />
+
+      <ConfirmDialog
+        open={!!deleteId}
+        title="Excluir categoria?"
+        message="Essa ação não pode ser desfeita."
+        onClose={() => setDeleteId(null)}
+        onConfirm={confirmDelete}
       />
     </div>
   )

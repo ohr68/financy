@@ -6,7 +6,9 @@ import { TransactionsFilters } from '../components/transactions/transaction-filt
 import { TransactionsTable } from '../components/transactions/transactions-table'
 import type { TransactionType } from '../@types/transactions/transaction-type'
 import type { Transaction } from '../@types/transactions/transaction'
-import { CreateTransactionModal } from '../components/transactions/create-transaction-modal'
+import { TransactionModal } from '../components/transactions/transaction-modal'
+import { ConfirmDialog } from '../components/confirm-dialog'
+import { toast } from 'sonner'
 
 export function TransactionsPage() {
   const { transactions, loading, deleteTransaction } = useTransactions()
@@ -18,6 +20,8 @@ export function TransactionsPage() {
   const [categoryFilter, setCategoryFilter] = useState('')
   const [monthFilter, setMonthFilter] = useState('')
   const [page, setPage] = useState(1)
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null)
+  const [deleteId, setDeleteId] = useState<string | null>(null)
 
   const filtered = useMemo(() => {
     return transactions.filter((tx) => {
@@ -30,13 +34,21 @@ export function TransactionsPage() {
     })
   }, [transactions, search, typeFilter, categoryFilter, monthFilter])
 
-  async function handleDelete(id: string) {
-    await deleteTransaction(id)
+  function handleDelete(id: string) {
+    setDeleteId(id)
+  }
+
+  async function confirmDelete() {
+    if (!deleteId) return
+    await deleteTransaction(deleteId)
+    setDeleteId(null)
+
+    toast.success('Transação excluída com sucesso!')
   }
 
   function handleEdit(transaction: Transaction) {
-    // TODO: open edit modal with transaction data
-    console.log('edit', transaction)
+    setEditingTransaction(transaction)
+    setIsModalOpen(true)
   }
 
   if (loading) {
@@ -85,9 +97,21 @@ export function TransactionsPage() {
         onEdit={handleEdit}
       />
 
-      <CreateTransactionModal
+      <TransactionModal
         open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false)
+          setEditingTransaction(null)
+        }}
+        initialData={editingTransaction}
+      />
+
+      <ConfirmDialog
+        open={!!deleteId}
+        title="Excluir transação?"
+        message="Essa ação não pode ser desfeita."
+        onClose={() => setDeleteId(null)}
+        onConfirm={confirmDelete}
       />
     </div>
   )

@@ -9,11 +9,6 @@ export const LIST_CATEGORIES = gql`
       icon
       color
       userId
-      countTransactions
-      mostUsedCategory {
-        icon
-        title
-      }
       createdAt
       updatedAt
     }

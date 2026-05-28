@@ -2,8 +2,12 @@ import { prismaClient } from "../../prisma/prisma"
 import type { CreateCategoryInput, UpdateCategoryInput } from "../dtos/input/category.input"
 
 export class CategoryService {
-  async listCategories() {
-    return await prismaClient.category.findMany()
+  async listCategories(userId: string) {
+    return await prismaClient.category.findMany({
+      where: {
+        userId
+      }
+    })
   }
 
   async findCategory(id: string) {

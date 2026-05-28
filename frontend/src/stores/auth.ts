@@ -13,9 +13,11 @@ interface AuthState {
   user: User | null
   token: string | null
   isAuthenticated: boolean
+  rememberedEmail: string | null
   register: (data: RegisterInput) => Promise<boolean>
-  login: (data: LoginInput) => Promise<boolean>
+  login: (data: LoginInput, rememberMe?: boolean) => Promise<boolean>
   logout: () => void
+  setUser: (user: User) => void
 }
 
 type RegisterMutationVariables = {
@@ -44,7 +46,7 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       token: null,
       isAuthenticated: false,
-
+      rememberedEmail: null,
       register: async (registerData: RegisterInput) => {
         try {
           const { data } = await apolloClient.mutate({
@@ -84,7 +86,10 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      login: async (loginData: LoginInput) => {
+      login: async (
+        loginData: LoginInput,
+        rememberMe = false
+      ) => {
         try {
           const { data } = await apolloClient.mutate({
             mutation: typedLoginMutation,
@@ -96,7 +101,7 @@ export const useAuthStore = create<AuthState>()(
             }
           })
 
-          if(data?.login) { 
+          if (data?.login) {
             const { token, user } = data.login
 
             set({
@@ -108,14 +113,17 @@ export const useAuthStore = create<AuthState>()(
                 updatedAt: user.updatedAt,
               },
               token,
-              isAuthenticated: true
+              isAuthenticated: true,
+              rememberedEmail: rememberMe
+                ? loginData.email
+                : null
             })
 
             return true
           }
 
-          return false 
-          
+          return false
+
         } catch (error) {
           console.error("Erro ao fazer o cadastro:", error);
           throw error
@@ -126,11 +134,18 @@ export const useAuthStore = create<AuthState>()(
         set({
           user: null,
           token: null,
-          isAuthenticated: false
+          isAuthenticated: false,
+          rememberedEmail: null
         })
 
         apolloClient.clearStore()
-      }
+      },
+
+      setUser: (user: User) => {
+        set({
+          user
+        })
+      },
     }),
     {
       name: "auth-storage",

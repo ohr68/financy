@@ -1,7 +1,6 @@
 import { Field, GraphQLISODateTime, ID, ObjectType } from "type-graphql"
 import { TransactionModel } from "./transaction.model"
 import { UserModel } from "./user.model"
-import { MostUsedCategoryOutput } from "../dtos/output/category.output"
 import { CategoryColor } from "../graphql/enums/category-color-enum"
 
 @ObjectType()
@@ -32,12 +31,6 @@ export class CategoryModel {
 
   @Field(() => Number, { nullable: true })
   countCategories?: number
-
-  @Field(() => MostUsedCategoryOutput, { nullable: true })
-  mostUsedCategory?: MostUsedCategoryOutput
-
-  @Field(() => Number, { nullable: true })
-  countTransactions?: number
 
   @Field(() => UserModel, { nullable: true })
   user?: UserModel

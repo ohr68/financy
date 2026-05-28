@@ -22,7 +22,6 @@ export class CategoryResolver {
   async createCategory(
     @Arg('data', () => CreateCategoryInput) data: CreateCategoryInput,
     @GqlUser() user: User
-
   ): Promise<CategoryModel> {
     return this.categoryService.createCategory(data, user.id)
   }
@@ -45,8 +44,15 @@ export class CategoryResolver {
   }
 
   @Query(() => [CategoryModel])
-  async listCategories(): Promise<CategoryModel[]> {
-    return this.categoryService.listCategories()
+  async listCategories(@GqlUser() user: User): Promise<CategoryModel[]> {
+    return this.categoryService.listCategories(user.id)
+  }
+
+  @Query(() => MostUsedCategoryOutput, {
+    nullable: true
+  })
+  async mostUsedCategory(@GqlUser() user: User): Promise<MostUsedCategoryOutput | null> {
+    return this.transactionService.mostUsedCategory(user.id)
   }
 
   @FieldResolver(() => UserModel)
@@ -55,24 +61,13 @@ export class CategoryResolver {
   }
 
   @FieldResolver(() => [TransactionModel])
-  async transactions(@Root() category: CategoryModel): Promise<TransactionModel[]> {
-    return this.transactionService.findByCategoryId(category.id)
+  async transactions(@Root() category: CategoryModel, @GqlUser() user: User
+  ): Promise<TransactionModel[]> {
+    return this.transactionService.findByCategoryId(category.id, user.id)
   }
 
   @FieldResolver(() => Number)
-  async countCategories(@Root() category: CategoryModel): Promise<number> {
-    return this.categoryService.countCategories(category.userId)
-  }
-
-  @FieldResolver(() => MostUsedCategoryOutput, {
-    nullable: true
-  })
-  async mostUsedCategory(@Root() category: CategoryModel): Promise<MostUsedCategoryOutput | null> {
-    return this.transactionService.mostUsedCategory(category.userId)
-  }
-
-  @FieldResolver(() => Number)
-  async countTransactions(@Root() category: CategoryModel): Promise<number> {
-    return this.transactionService.countTransactions(category.userId)
+  async countCategories(@GqlUser() user: User): Promise<number> {
+    return this.categoryService.countCategories(user.id)
   }
 }

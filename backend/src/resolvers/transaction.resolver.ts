@@ -9,6 +9,7 @@ import { UserModel } from "../models/user.model"
 import { UserService } from "../services/user.service"
 import { CategoryModel } from "../models/category.model"
 import { CategoryService } from "../services/category.service"
+import { CategorySummaryOutput } from "../dtos/output/category.output"
 
 @Resolver(() => TransactionModel)
 @UseMiddleware(IsAuth)
@@ -22,7 +23,6 @@ export class TransactionResolver {
     @Arg('categoryId', () => String) categoryId: string,
     @Arg('data', () => CreateTransactionInput) data: CreateTransactionInput,
     @GqlUser() user: User
-
   ): Promise<TransactionModel> {
     return this.transactionService.createTransaction(user.id, categoryId, data)
   }
@@ -46,8 +46,18 @@ export class TransactionResolver {
   }
 
   @Query(() => [TransactionModel])
-  async listTransactions(): Promise<TransactionModel[]> {
-    return this.transactionService.listTransactions()
+  async listTransactions(@GqlUser() user: User): Promise<TransactionModel[]> {
+    return this.transactionService.listTransactions(user.id)
+  }
+
+  @Query(() => Number)
+  async countTransactions(@GqlUser() user: User): Promise<number> {
+    return this.transactionService.countTransactions(user.id)
+  }
+
+  @Query(() => [CategorySummaryOutput])
+  async categorySummaries(@GqlUser() user: User): Promise<CategorySummaryOutput[]> {
+    return this.transactionService.getCategorySummaries(user.id)
   }
 
   @FieldResolver(() => UserModel)
@@ -61,21 +71,21 @@ export class TransactionResolver {
   }
 
   @FieldResolver(() => Number)
+  async totalBalance(@Root() transaction: TransactionModel): Promise<number> {
+    return this.transactionService.getTotalBalance(transaction.userId)
+  }
+
+  @FieldResolver(() => Number)
   async monthlyIncomes(@Root() transaction: TransactionModel): Promise<number> {
     return this.transactionService.getMontlhyAmountByType(
-      transaction.userId, 
+      transaction.userId,
       TransactionType.Revenue)
   }
-  
+
   @FieldResolver(() => Number)
   async monthlyExpenses(@Root() transaction: TransactionModel): Promise<number> {
     return this.transactionService.getMontlhyAmountByType(
       transaction.userId,
-    TransactionType.Expense)
-  }
-
-  @FieldResolver(() => Number)
-  async countTransactions(@Root() category: CategoryModel): Promise<number> {
-    return this.transactionService.countTransactions(category.userId)
+      TransactionType.Expense)
   }
 }

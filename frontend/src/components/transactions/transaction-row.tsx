@@ -1,4 +1,4 @@
-import { Trash2, Pencil, CircleAlert } from 'lucide-react'
+import { CircleAlert, Trash, SquarePen, ArrowUpCircle, ArrowDownCircle } from 'lucide-react'
 import { CategoryBadge } from '../categories/category-badge'
 import { CategoryIcon } from '../categories/category-icon'
 import type { Transaction } from '../../@types/transactions/transaction'
@@ -24,8 +24,8 @@ function formatDate(dateStr: string) {
 
 export function TransactionRow({ transaction, onDelete, onEdit }: TransactionRowProps) {
   return (
-    <tr className="border-b border-gray-100 hover:bg-gray-50 transition">
-      <td className="py-4 px-4">
+    <tr className="border-b border-gray-200 hover:bg-gray-50 transition">
+      <td className="py-4 px-7">
         <div className="flex items-center gap-3">
           {transaction.category && (
             <CategoryIcon
@@ -37,8 +37,8 @@ export function TransactionRow({ transaction, onDelete, onEdit }: TransactionRow
           <span className="text-sm font-medium text-gray-800">{transaction.description}</span>
         </div>
       </td>
-      <td className="py-4 px-4 text-sm text-gray-500">{formatDate(transaction.date)}</td>
-      <td className="py-4 px-4">
+      <td className="py-4 px-6 text-sm text-gray-500">{formatDate(transaction.date)}</td>
+      <td className="py-4 px-6">
         {transaction.category && (
           <CategoryBadge
             title={transaction.category.title}
@@ -48,17 +48,27 @@ export function TransactionRow({ transaction, onDelete, onEdit }: TransactionRow
       </td>
       <td className="py-4 px-4">
         <div className="flex items-center gap-1">
-          <CircleAlert
-            size={14}
-            className={transaction.type === 'Revenue' ? 'text-success' : 'text-danger'}
-          />
-          <span className={`text-sm font-medium ${transaction.type === 'Revenue' ? 'text-success' : 'text-danger'}`}>
+          {
+            transaction.type === 'Revenue' ? 
+            (
+               <ArrowUpCircle
+                size={14}
+                className='text-green-dark'
+              />
+            ) : (
+              <ArrowDownCircle
+                size={14}
+                className='text-red-dark'
+              />
+            )
+          }
+          <span className={`text-sm font-medium ${transaction.type === 'Revenue' ? 'text-green-dark' : 'text-red-dark'}`}>
             {transaction.type === 'Revenue' ? 'Entrada' : 'Saída'}
           </span>
         </div>
       </td>
       <td className="py-4 px-4 text-sm font-semibold text-right">
-        <span className={transaction.type === 'Revenue' ? 'text-success' : 'text-danger'}>
+        <span>
           {transaction.type === 'Revenue' ? '+' : '-'} {formatCurrency(transaction.amount)}
         </span>
       </td>
@@ -66,15 +76,21 @@ export function TransactionRow({ transaction, onDelete, onEdit }: TransactionRow
         <div className="flex items-center gap-2 justify-end">
           <button
             onClick={() => onDelete(transaction.id)}
-            className="text-gray-400 hover:text-danger transition cursor-pointer"
+            className="text-red border border-gray-300 rounded-md p-1
+              hover:border-gray-200
+              hover:bg-gray-300
+              transition cursor-pointer"
           >
-            <Trash2 size={16} />
+            <Trash size={16} />
           </button>
           <button
             onClick={() => onEdit(transaction)}
-            className="text-gray-400 hover:text-blue-500 transition cursor-pointer"
+            className="text-gray-700 border border-gray-300 rounded-md p-1
+              hover:border-gray-200
+              hover:bg-gray-300
+              transition cursor-pointer"
           >
-            <Pencil size={16} />
+            <SquarePen size={16} />
           </button>
         </div>
       </td>

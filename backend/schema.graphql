@@ -17,17 +17,25 @@ enum CategoryColor {
 type CategoryModel {
   color: CategoryColor!
   countCategories: Float
-  countTransactions: Float
   createdAt: DateTimeISO!
   description: String!
   icon: String!
   id: ID!
-  mostUsedCategory: MostUsedCategoryOutput
   title: String!
   transactions: [TransactionModel!]
   updatedAt: DateTimeISO
   user: UserModel
   userId: String!
+}
+
+type CategorySummaryOutput {
+  categoryId: String!
+  color: String!
+  net: Float!
+  title: String!
+  totalExpenses: Float!
+  totalIncome: Float!
+  totalTransactions: Float!
 }
 
 input CreateCategoryInput {
@@ -61,6 +69,7 @@ type LoginOutput {
 }
 
 type MostUsedCategoryOutput {
+  color: String!
   icon: String!
   title: String!
 }
@@ -74,12 +83,16 @@ type Mutation {
   register(data: RegisterInput!): RegisterOutput!
   updateCategory(data: UpdateCategoryInput!, id: String!): CategoryModel!
   updateTransaction(categoryId: String!, data: UpdateTransactionInput!, id: String!): TransactionModel!
+  updateUser(data: UpdateUserInput!): UpdateUserOutput!
 }
 
 type Query {
+  categorySummaries: [CategorySummaryOutput!]!
+  countTransactions: Float!
   getUser(id: String!): UserModel!
   listCategories: [CategoryModel!]!
   listTransactions: [TransactionModel!]!
+  mostUsedCategory: MostUsedCategoryOutput
 }
 
 input RegisterInput {
@@ -130,6 +143,16 @@ input UpdateTransactionInput {
   date: DateTimeISO!
   description: String!
   type: TransactionType!
+}
+
+input UpdateUserInput {
+  name: String!
+}
+
+type UpdateUserOutput {
+  email: String!
+  id: String!
+  name: String!
 }
 
 type UserModel {

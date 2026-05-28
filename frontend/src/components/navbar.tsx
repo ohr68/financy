@@ -19,7 +19,7 @@ export function Navbar() {
 
   return (
     <header className="w-full border-b border-gray-200 bg-white">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      <div className="mx-auto flex max-w-7xl items-center justify-between py-4">
         <NavLink to="/dashboard">
           <img src={logo} height={32} width={134} alt="Financy" />
         </NavLink>
@@ -37,7 +37,9 @@ export function Navbar() {
         </nav>
 
         <NavLink to="/account">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-300 transition cursor-pointer">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full 
+                          bg-gray-200 text-sm font-semibold text-gray-700 
+                          hover:bg-gray-300 transition cursor-pointer">
             {initials}
           </div>
         </NavLink>

@@ -26,13 +26,13 @@ export function TransactionsTable({
     <div className="rounded-2xl border border-gray-200 bg-white overflow-hidden">
       <table className="w-full">
         <thead>
-          <tr className="border-b border-gray-100">
-            <th className="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Descrição</th>
-            <th className="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Data</th>
-            <th className="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Categoria</th>
-            <th className="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Tipo</th>
-            <th className="py-3 px-4 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">Valor</th>
-            <th className="py-3 px-4 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">Ações</th>
+          <tr className="border-b border-gray-200">
+            <th className="py-4 px-7 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Descrição</th>
+            <th className="py-4 px-7 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Data</th>
+            <th className="py-4 px-7 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Categoria</th>
+            <th className="py-4 px-7 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Tipo</th>
+            <th className="py-4 px-7 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Valor</th>
+            <th className="py-4 px-7 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -47,16 +47,23 @@ export function TransactionsTable({
         </tbody>
       </table>
 
-      <div className="flex items-center justify-between px-4 py-3 border-t border-gray-100">
-        <span className="text-xs text-gray-500">
-          {(page - 1) * PAGE_SIZE + 1} a {Math.min(page * PAGE_SIZE, transactions.length)} de {transactions.length} resultados
+      <div className="flex items-center justify-between px-7 py-5">
+        <span className="text-xs text-gray-700">
+          {(page - 1) * PAGE_SIZE + 1} a {Math.min(page * PAGE_SIZE, transactions.length)} | {transactions.length} resultados
         </span>
 
         <div className="flex items-center gap-1">
           <button
             onClick={() => onPageChange(page - 1)}
             disabled={page === 1}
-            className="p-1 rounded text-gray-400 hover:text-gray-700 disabled:opacity-30 cursor-pointer"
+            className="p-1 rounded-sm
+            w-7 h-7
+            text-gray-700
+            border-gray-300
+            border
+            cursor-pointer
+            disabled:text-gray-500
+            disabled:cursor-not-allowed"
           >
             <ChevronLeft size={16} />
           </button>
@@ -65,10 +72,10 @@ export function TransactionsTable({
             <button
               key={p}
               onClick={() => onPageChange(p)}
-              className={`w-7 h-7 rounded text-xs font-medium cursor-pointer transition ${
+              className={`w-7 h-7 rounded-sm text-xs font-medium cursor-pointer transition ${
                 p === page
                   ? 'bg-brand text-white'
-                  : 'text-gray-500 hover:bg-gray-100'
+                  : 'text-gray-700 hover:bg-gray-100'
               }`}
             >
               {p}
@@ -78,7 +85,14 @@ export function TransactionsTable({
           <button
             onClick={() => onPageChange(page + 1)}
             disabled={page === totalPages}
-            className="p-1 rounded text-gray-400 hover:text-gray-700 disabled:opacity-30 cursor-pointer"
+            className="p-1 rounded-sm
+            w-7 h-7
+            text-gray-700
+            border-gray-300
+            border
+            cursor-pointer
+            disabled:text-gray-500
+            disabled:cursor-not-allowed"
           >
             <ChevronRight size={16} />
           </button>
