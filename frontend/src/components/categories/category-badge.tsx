@@ -1,4 +1,5 @@
-import type { CategoryColor } from '../types/category'
+import type { CategoryColor } from "../../@types/categories/category-color";
+
 
 const colorMap: Record<CategoryColor, { bg: string; text: string }> = {
   Blue: { bg: 'bg-blue-light', text: 'text-blue-dark' },

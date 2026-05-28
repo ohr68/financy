@@ -20,6 +20,17 @@ function format(value: string) {
   return `${MONTHS[Number(month) - 1]} / ${year}`
 }
 
+function isFutureMonth(year: number, monthIndex: number) {
+  const now = new Date()
+  const currentYear = now.getFullYear()
+  const currentMonth = now.getMonth() // 0-based
+
+  if (year > currentYear) return true
+  if (year === currentYear && monthIndex > currentMonth) return true
+
+  return false
+}
+
 export function MonthPicker({
   label,
   value,
@@ -38,6 +49,8 @@ export function MonthPicker({
   const isActive = open
 
   function selectMonth(monthIndex: number) {
+    if (isFutureMonth(year, monthIndex)) return
+
     const formatted = `${year}-${String(monthIndex + 1).padStart(2, '0')}`
     onChange(formatted)
     setOpen(false)
@@ -56,7 +69,7 @@ export function MonthPicker({
   }, [])
 
   return (
-    <div ref={wrapperRef} className="flex flex-col relative z-0">      
+    <div ref={wrapperRef} className="flex flex-col relative z-0">
       <label
         className={`
           mb-2 text-sm font-medium transition
@@ -74,7 +87,6 @@ export function MonthPicker({
           px-4 text-sm text-left
           flex items-center justify-between
           bg-white transition
-
           outline-none focus:outline-none focus:ring-0
         "
       >
@@ -92,7 +104,7 @@ export function MonthPicker({
         <div
           className="
             absolute left-0 top-full mt-2 w-full
-            z-999
+            z-50
             rounded-lg border border-gray-200 bg-white
             shadow-lg p-3
           "
@@ -121,21 +133,28 @@ export function MonthPicker({
           </div>
 
           <div className="grid grid-cols-3 gap-2">
-            {MONTHS.map((m, i) => (
-              <button
-                key={m}
-                type="button"
-                onClick={() => selectMonth(i)}
-                className="
-                  text-sm rounded-md py-2
-                  text-gray-700
-                  hover:bg-gray-100
-                  transition
-                "
-              >
-                {m}
-              </button>
-            ))}
+            {MONTHS.map((m, i) => {
+              const disabled = isFutureMonth(year, i)
+
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  disabled={disabled}
+                  onClick={() => selectMonth(i)}
+                  className={`
+                    text-sm rounded-md py-2 transition
+                    ${
+                      disabled
+                        ? 'text-gray-300 cursor-not-allowed'
+                        : 'text-gray-700 hover:bg-gray-100'
+                    }
+                  `}
+                >
+                  {m}
+                </button>
+              )
+            })}
           </div>
         </div>
       )}
